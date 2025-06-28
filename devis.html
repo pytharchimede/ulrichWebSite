@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demande de Devis – Ulrich Amani</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- FontAwesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Choices.js pour les selects -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <style>
+        body {
+            background: linear-gradient(120deg, #1746A2 0%, #4F8DFD 100%);
+            min-height: 100vh;
+        }
+        .devis-container {
+            max-width: 540px;
+            margin: 60px auto 40px auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 40px #1746A244;
+            padding: 48px 24px 36px 24px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s cubic-bezier(.23,1.01,.32,1);
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(60px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .devis-title {
+            color: #1746A2;
+            font-size: 2.1rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .devis-stepper {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 32px;
+        }
+        .devis-step {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #E6E6E6;
+            color: #1746A2;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: background 0.3s, color 0.3s;
+        }
+        .devis-step.active {
+            background: linear-gradient(135deg, #4F8DFD 60%, #1746A2 100%);
+            color: #fff;
+            box-shadow: 0 2px 12px #4F8DFD44;
+        }
+        .devis-form {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+        .devis-form label {
+            font-weight: 600;
+            color: #1746A2;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .devis-form input,
+        .devis-form textarea,
+        .devis-form select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1.5px solid #E6E6E6;
+            font-size: 1rem;
+            font-family: inherit;
+            background: #F9FAFB;
+            transition: border 0.2s;
+            margin-bottom: 0;
+            box-sizing: border-box;
+            display: block;
+        }
+        .devis-form input:focus,
+        .devis-form textarea:focus,
+        .devis-form select:focus {
+            border: 1.5px solid #4F8DFD;
+            outline: none;
+        }
+        .devis-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+        .devis-btn {
+            background: #1746A2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .devis-btn[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .devis-btn.secondary {
+            background: #fff;
+            color: #1746A2;
+            border: 2px solid #1746A2;
+        }
+        .devis-success {
+            text-align: center;
+            color: #25D366;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 24px;
+            animation: fadeInUp 1s;
+        }
+        .devis-illu {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+        .devis-illu svg {
+            width: 60px;
+            height: 60px;
+            filter: drop-shadow(0 2px 12px #4F8DFD44);
+        }
+        /* Drag & Drop */
+        .dropzone {
+            border: 2px dashed #4F8DFD;
+            border-radius: 10px;
+            background: #F9FAFB;
+            padding: 32px 12px;
+            text-align: center;
+            color: #1746A2;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            margin-bottom: 0;
+            position: relative;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .dropzone.dragover {
+            border-color: #1746A2;
+            background: #E6E6E6;
+        }
+        .dropzone input[type="file"] {
+            display: none;
+        }
+        .dz-icon {
+            font-size: 2.8rem;
+            color: #4F8DFD;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+        .dz-files-list {
+            margin-top: 10px;
+            text-align: left;
+            font-size: 0.97rem;
+            width: 100%;
+        }
+        .dz-file-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #E6E6E6;
+            color: #1746A2;
+            border-radius: 6px;
+            padding: 5px 10px;
+            margin: 2px 0;
+            font-size: 0.97em;
+            position: relative;
+        }
+        .dz-file-item img {
+            width: 32px;
+            height: 32px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #4F8DFD22;
+        }
+        .dz-remove {
+            color: #e74c3c;
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-left: auto;
+            transition: color 0.2s;
+        }
+        .dz-remove:hover {
+            color: #c0392b;
+        }
+        .choices__inner {
+            min-height: 48px;
+            border-radius: 8px;
+            border: 1.5px solid #E6E6E6;
+            font-size: 1rem;
+            background: #F9FAFB;
+        }
+        .choices__list--multiple .choices__item {
+            background-color: #4F8DFD22;
+            border: 1px solid #4F8DFD;
+            color: #1746A2;
+            border-radius: 6px;
+            margin: 2px 4px 2px 0;
+        }
+        @media (max-width: 600px) {
+            .devis-container {
+                padding: 24px 4px 18px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="devis-container">
+        <div class="devis-illu">
+            <!-- Icône DevOps animée -->
+            <svg viewBox="0 0 64 64" fill="none">
+                <circle cx="32" cy="32" r="28" stroke="#1746A2" stroke-width="4" fill="#F9FAFB"/>
+                <path d="M20 32a12 12 0 0 1 24 0" stroke="#4F8DFD" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="32" cy="32" r="6" fill="#4F8DFD">
+                    <animate attributeName="r" values="6;10;6" dur="1.2s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+        <div class="devis-title">Demande de Devis</div>
+        <div class="devis-stepper">
+            <div class="devis-step active" id="step-1">1</div>
+            <div class="devis-step" id="step-2">2</div>
+            <div class="devis-step" id="step-3">3</div>
+        </div>
+        <form class="devis-form" id="devisForm" autocomplete="off">
+            <!-- Étape 1 -->
+            <div class="devis-step-content" id="content-1">
+                <label for="nom">Votre prénom</label>
+                <input type="text" id="nom" name="nom" placeholder="Ex : Ulrich" required>
+                <label for="email">Votre email</label>
+                <input type="email" id="email" name="email" placeholder="Ex : ulrich@email.com" required>
+                <label for="tel">Votre téléphone</label>
+                <input type="tel" id="tel" name="tel" placeholder="Ex : +225 07 00 00 00 00">
+            </div>
+            <!-- Étape 2 -->
+            <div class="devis-step-content" id="content-2" style="display:none;">
+                <label for="service">Type de projet</label>
+                <select id="service" name="service" multiple required>
+                    <option>Développement Web</option>
+                    <option>Application Mobile</option>
+                    <option>API & Intégration</option>
+                    <option>Tableau de bord</option>
+                    <option>Maintenance & Assistance</option>
+                    <option>Conseil technique</option>
+                </select>
+                <label for="details">Décrivez votre besoin</label>
+                <textarea id="details" name="details" rows="4" placeholder="Décrivez votre projet, vos attentes, vos délais..."></textarea>
+                <label for="logo">Logo ou images (optionnel)</label>
+                <div class="dropzone" id="logoDropzone">
+                    <i class="fa-regular fa-images dz-icon"></i>
+                    <span id="logoText">Glissez-déposez vos images ici ou cliquez pour sélectionner</span>
+                    <input type="file" id="logo" name="logo" accept="image/*" multiple>
+                    <div class="dz-files-list" id="logoFiles"></div>
+                </div>
+            </div>
+            <!-- Étape 3 -->
+            <div class="devis-step-content" id="content-3" style="display:none;">
+                <label for="budget">Budget estimé (XOF)</label>
+                <select id="budget" name="budget" required>
+                    <option value="">Sélectionnez une tranche</option>
+                    <option>&lt; 500 000 XOF</option>
+                    <option>500 000 – 1 000 000 XOF</option>
+                    <option>1 000 000 – 3 000 000 XOF</option>
+                    <option>3 000 000 – 10 000 000 XOF</option>
+                    <option>&gt; 10 000 000 XOF</option>
+                </select>
+                <label for="delai">Délai souhaité</label>
+                <select id="delai" name="delai" required>
+                    <option value="">Sélectionnez un délai</option>
+                    <option>1 semaine</option>
+                    <option>2 semaines</option>
+                    <option>1 mois</option>
+                    <option>2 mois</option>
+                    <option>3 mois ou plus</option>
+                </select>
+                <label for="fichiers">Ajouter des fichiers (optionnel)</label>
+                <div class="dropzone" id="filesDropzone">
+                    <i class="fa-solid fa-paperclip dz-icon"></i>
+                    <span id="filesText">Glissez-déposez vos fichiers ici ou cliquez pour sélectionner</span>
+                    <input type="file" id="fichiers" name="fichiers" multiple>
+                    <div class="dz-files-list" id="filesList"></div>
+                </div>
+            </div>
+            <div class="devis-buttons">
+                <button type="button" class="devis-btn secondary" id="prevBtn" style="display:none;">Précédent</button>
+                <button type="button" class="devis-btn" id="nextBtn">Suivant</button>
+                <button type="submit" class="devis-btn" id="submitBtn" style="display:none;">Envoyer</button>
+            </div>
+        </form>
+        <div class="devis-success" id="devisSuccess" style="display:none;">
+            Merci ! Votre demande a bien été envoyée.<br>
+            Je vous réponds sous 24h.<br>
+            <a href="index.html" style="color:#1746A2;text-decoration:underline;display:inline-block;margin-top:12px;">Retour à l'accueil</a>
+        </div>
+    </div>
+    <!-- Choices.js -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        // Multi-step logic
+        const steps = [1,2,3];
+        let currentStep = 1;
+        const stepElems = steps.map(i => document.getElementById('step-'+i));
+        const contentElems = steps.map(i => document.getElementById('content-'+i));
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const form = document.getElementById('devisForm');
+        const success = document.getElementById('devisSuccess');
+
+        function showStep(step) {
+            steps.forEach((s, idx) => {
+                stepElems[idx].classList.toggle('active', s === step);
+                contentElems[idx].style.display = (s === step) ? 'block' : 'none';
+            });
+            prevBtn.style.display = (step > 1) ? 'inline-block' : 'none';
+            nextBtn.style.display = (step < steps.length) ? 'inline-block' : 'none';
+            submitBtn.style.display = (step === steps.length) ? 'inline-block' : 'none';
+        }
+        nextBtn.onclick = () => {
+            // Validation simple
+            if(currentStep === 1) {
+                if(!form.nom.value.trim() || !form.email.value.trim()) {
+                    form.nom.focus();
+                    return;
+                }
+            }
+            if(currentStep === 2) {
+                if(!serviceChoices.getValue(true).length) {
+                    document.getElementById('service').focus();
+                    return;
+                }
+            }
+            if(currentStep < steps.length) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        };
+        prevBtn.onclick = () => {
+            if(currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        };
+        form.onsubmit = e => {
+            e.preventDefault();
+            form.style.display = 'none';
+            success.style.display = 'block';
+        };
+        showStep(currentStep);
+
+        // Choices.js pour les selects
+        const serviceChoices = new Choices('#service', {
+            removeItemButton: true,
+            searchEnabled: true,
+            placeholder: true,
+            placeholderValue: 'Sélectionnez un ou plusieurs services'
+        });
+        const delaiChoices = new Choices('#delai', {
+            searchEnabled: true,
+            placeholder: true,
+            placeholderValue: 'Sélectionnez un délai'
+        });
+        const budgetChoices = new Choices('#budget', {
+            searchEnabled: true,
+            placeholder: true,
+            placeholderValue: 'Sélectionnez un budget'
+        });
+
+        // Drag & Drop logic for logo (multi-images)
+        const logoDropzone = document.getElementById('logoDropzone');
+        const logoInput = document.getElementById('logo');
+        const logoFiles = document.getElementById('logoFiles');
+        let logoArray = [];
+        logoDropzone.addEventListener('click', () => logoInput.click());
+        logoDropzone.addEventListener('dragover', e => {
+            e.preventDefault();
+            logoDropzone.classList.add('dragover');
+        });
+        logoDropzone.addEventListener('dragleave', () => logoDropzone.classList.remove('dragover'));
+        logoDropzone.addEventListener('drop', e => {
+            e.preventDefault();
+            logoDropzone.classList.remove('dragover');
+            if(e.dataTransfer.files.length) {
+                addLogos(e.dataTransfer.files);
+            }
+        });
+        logoInput.addEventListener('change', () => addLogos(logoInput.files));
+        function addLogos(fileList) {
+            for(let file of fileList) {
+                if(file.type.startsWith('image/') && !logoArray.some(f => f.name === file.name && f.size === file.size)) {
+                    logoArray.push(file);
+                }
+            }
+            updateLogoFiles();
+        }
+        function updateLogoFiles() {
+            logoFiles.innerHTML = '';
+            logoArray.forEach((file, idx) => {
+                let reader = new FileReader();
+                let item = document.createElement('div');
+                item.className = 'dz-file-item';
+                reader.onload = function(e) {
+                    item.innerHTML = `<img src="${e.target.result}" alt="Aperçu"><span>${file.name}</span>
+                    <button type="button" class="dz-remove" title="Supprimer"><i class="fa fa-times"></i></button>`;
+                    item.querySelector('.dz-remove').onclick = () => {
+                        logoArray.splice(idx,1);
+                        updateLogoFiles();
+                    };
+                };
+                reader.readAsDataURL(file);
+                logoFiles.appendChild(item);
+            });
+            // Synchronise logoInput avec logoArray
+            let dt = new DataTransfer();
+            logoArray.forEach(f => dt.items.add(f));
+            logoInput.files = dt.files;
+        }
+
+        // Drag & Drop logic for files
+        const filesDropzone = document.getElementById('filesDropzone');
+        const filesInput = document.getElementById('fichiers');
+        const filesList = document.getElementById('filesList');
+        let filesArray = [];
+        filesDropzone.addEventListener('click', () => filesInput.click());
+        filesDropzone.addEventListener('dragover', e => {
+            e.preventDefault();
+            filesDropzone.classList.add('dragover');
+        });
+        filesDropzone.addEventListener('dragleave', () => filesDropzone.classList.remove('dragover'));
+        filesDropzone.addEventListener('drop', e => {
+            e.preventDefault();
+            filesDropzone.classList.remove('dragover');
+            if(e.dataTransfer.files.length) {
+                addFiles(e.dataTransfer.files);
+            }
+        });
+        filesInput.addEventListener('change', () => addFiles(filesInput.files));
+        function addFiles(fileList) {
+            for(let file of fileList) {
+                if(!filesArray.some(f => f.name === file.name && f.size === file.size)) {
+                    filesArray.push(file);
+                }
+            }
+            updateFilesList();
+        }
+        function getFileIcon(file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            if(file.type.startsWith('image/')) return `<img src="" class="dz-thumb" style="display:none;">`; // thumb handled below
+            if(['pdf'].includes(ext)) return `<i class="fa-solid fa-file-pdf" style="color:#e74c3c"></i>`;
+            if(['doc','docx','odt'].includes(ext)) return `<i class="fa-solid fa-file-word" style="color:#1746A2"></i>`;
+            if(['xls','xlsx','ods','csv'].includes(ext)) return `<i class="fa-solid fa-file-excel" style="color:#27ae60"></i>`;
+            if(['ppt','pptx','odp'].includes(ext)) return `<i class="fa-solid fa-file-powerpoint" style="color:#e67e22"></i>`;
+            if(['zip','rar','7z','tar','gz'].includes(ext)) return `<i class="fa-solid fa-file-zipper" style="color:#8e44ad"></i>`;
+            if(['txt','md','rtf'].includes(ext)) return `<i class="fa-solid fa-file-lines" style="color:#555"></i>`;
+            return `<i class="fa-solid fa-file" style="color:#888"></i>`;
+        }
+        function updateFilesList() {
+            filesList.innerHTML = '';
+            filesArray.forEach((file, idx) => {
+                let isImage = file.type.startsWith('image/');
+                let item = document.createElement('div');
+                item.className = 'dz-file-item';
+                if(isImage) {
+                    let reader = new FileReader();
+                    reader.onload = function(e) {
+                        item.innerHTML = `<img src="${e.target.result}" alt="Aperçu"><span>${file.name}</span>
+                        <button type="button" class="dz-remove" title="Supprimer"><i class="fa fa-times"></i></button>`;
+                        item.querySelector('.dz-remove').onclick = () => {
+                            filesArray.splice(idx,1);
+                            updateFilesList();
+                        };
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    item.innerHTML = `${getFileIcon(file)} <span>${file.name}</span>
+                    <button type="button" class="dz-remove" title="Supprimer"><i class="fa fa-times"></i></button>`;
+                    item.querySelector('.dz-remove').onclick = () => {
+                        filesArray.splice(idx,1);
+                        updateFilesList();
+                    };
+                }
+                filesList.appendChild(item);
+            });
+            // Synchronise filesInput avec filesArray
+            let dt = new DataTransfer();
+            filesArray.forEach(f => dt.items.add(f));
+            filesInput.files = dt.files;
+        }
+    </script>
+</body>
+</html>
