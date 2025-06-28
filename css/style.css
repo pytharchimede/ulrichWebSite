@@ -408,6 +408,12 @@ footer nav a:hover {
   header nav.active {
     display: flex;
   }
+  header nav.active a {
+    color: #1746A2;
+  }
+  header nav.active a:hover {
+    color: #4F8DFD;
+  }
   .menu-toggle {
     display: block;
   }
