@@ -192,9 +192,9 @@
             <p class="text-lg text-gray-400">Développeur d'Applications Senior</p>
         </div>
 
-        <div class="flex items-start mt-6 space-x-8">
+        <div class="flex flex-col md:flex-row items-start mt-6 md:space-x-8 space-y-6 md:space-y-0">
             <!-- Contacts Section -->
-            <div class="flex flex-col items-start space-y-4 w-1/2">
+            <div class="flex flex-col items-start space-y-4 w-full md:w-1/2">
                 <p><i class="fas fa-phone-alt text-blue-500 mr-2"></i> <strong>Téléphone :</strong> +225 07 48 36 77 10</p>
                 <p><i class="fab fa-whatsapp text-blue-500 mr-2"></i> <strong>WhatsApp :</strong>
                     <a href="https://wa.me/+2250748367710" class="text-blue-400" target="_blank">+225 07 48 36 77 10</a>
@@ -204,12 +204,13 @@
                 <p><i class="fas fa-map-marker-alt text-blue-500 mr-2"></i> <strong>Lieu :</strong> Abidjan, Côte d'Ivoire</p>
                 <p><i class="fab fa-linkedin text-blue-500 mr-2"></i> <strong>LinkedIn :</strong> <a target="_blank" href="https://linkedin.com/in/ulrich-amani-643a3311b" class="text-blue-400">ulrich-amani</a></p>
             </div>
-
-
             <!-- Resume Section -->
-            <div class="w-1/2 text-gray-400">
+            <div class="w-full md:w-1/2 text-gray-400">
                 <p class="mb-4">
-                    <strong>Résumé :</strong> Développeur web expérimenté, je suis dynamique et j’aime travailler en équipe pour relever des challenges techniques. J’ai une bonne maîtrise des outils de développement et je suis en constante recherche d’apprentissage. Découvrez-en plus sur mon profil lors d’une rencontre.
+                    <strong>Résumé :</strong>
+                    Développeur web expérimenté, je suis dynamique et j’aime travailler en équipe pour relever des
+                    challenges techniques. J’ai une bonne maîtrise des outils de développement et je suis en constante
+                    recherche d’apprentissage. Découvrez-en plus sur mon profil lors d’une rencontre.
                 </p>
                 <p>
                     Ce présent CV ne contient pas la liste exhaustive des applications fonctionnelles que j’ai mis en place.
